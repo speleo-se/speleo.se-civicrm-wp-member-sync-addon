@@ -1,4 +1,4 @@
-# civicrm-wp-member-sync-spele-se-addon
+# civicrm-wp-member-sync-speleo-se-addon
 
 Inspired by:
 https://github.com/christianwach/civicrm-wp-member-sync/issues/16
