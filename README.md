@@ -1,0 +1,1 @@
+# civicrm-wp-member-sync-spele-se-addon
