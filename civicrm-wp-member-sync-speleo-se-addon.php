@@ -237,19 +237,19 @@ class CiviCRMSpeleoSe {
 	protected function getActivityTypeId($type) {
 		switch ($type) {
 			case self::ACTIVITYTYPE_WORDPRESS:
-				return $this->getActivityTypeId(
+				return $this->getOrCreateActivityTypeId(
 						'Välkomstmail från Wordpress'
 						, 'Ett välkomstmail för inloggning till Wordpress skickas ut när användare skapas.'
 						, 'fa-wordpress'
 						);
 			case self::ACTIVITYTYPE_SYNCUSER:
-				return $this->getActivityTypeId(
+				return $this->getOrCreateActivityTypeId(
 						'Syncning av användare'
 						, 'Syncningshändelser mellan CiviCRM-kontakter och Wordpress-användare för inloggning på hemsidan.'
 						, 'fa-refresh'
 						);
 			case self::ACTIVITYTYPE_NEWMEMBERSHIPNR:
-				return $this->getActivityTypeId(
+				return $this->getOrCreateActivityTypeId(
 						'Skapat medlemsnummer'
 						, 'Vid synkning av Wordpress-användare skapas nytt medlemsnummer.'
 						, 'fa-user-plus'
@@ -264,7 +264,7 @@ class CiviCRMSpeleoSe {
      * @param string $description
      * @return int
      */
-    protected function getActivityTypeId($label, $description = null, $icon = null) {
+    protected function getOrCreateActivityTypeId($label, $description = null, $icon = null) {
         if (!isset($this->cachedActivityTypeId[$label])) {
             $this->cachedActivityTypeId[$label] =
                     \Civi\Api4\OptionValue::get()

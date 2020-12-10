@@ -15,7 +15,10 @@ if (! defined ( 'WPINC' )) {
 class CiviCRMSpeleoSeConfig {
 	protected $sektioner = [ ];
 	protected $org_ssf;
+	protected $org_ngf;
+	
 	public function configureCiviCRM() {
+
 		// Set default organisation:
 		$this->org_ssf = \Civi\Api4\Contact::update ( false )
 				->addWhere ( 'id', '=', 1 )
@@ -33,7 +36,7 @@ class CiviCRMSpeleoSeConfig {
 				'fixed_period_rollover_day' => "1201" // När blir registrerat medlemskap för nästa år?
 		];
 
-		// SSF familjemedlemskapsrealtion
+// 		// SSF familjemedlemskapsrealtion
 		$familjemedlemskapsrealtion = \Civi\Api4\RelationshipType::get ( false )
 				->addWhere ( 'name_a_b', '=', 'huvudfamiljemedlem' )
 				->setLimit ( 1 )
@@ -55,17 +58,17 @@ class CiviCRMSpeleoSeConfig {
 		$this->createMembershipType ( [ 
 				'name' => "Vuxen",
 				'description' => "Medlemskap under kalenderåret för person från 26 år.",
-				'minimum_fee' => "300"
+				'minimum_fee' => "350" //350 för 2021
 		] + $calenderYearMemebership );
 		$this->createMembershipType ( [ 
 				'name' => "Student",
 				'description' => "Medlemskap under kalenderåret för person under 26 år.",
-				'minimum_fee' => "150"
+				'minimum_fee' => "175" // 175 för 2021
 		] + $calenderYearMemebership );
 		$this->createMembershipType ( [ 
 				'name' => "Familj",
 				'description' => "Medlemskap under kalenderåret för person i samma hushåll.",
-				'minimum_fee' => "350",
+				'minimum_fee' => "400", // 400 för 2021
 
 				'relationship_type_id' => $familjemedlemskapsrealtion ['id'],
 				'relationship_direction' => 'b_a'
@@ -95,12 +98,13 @@ class CiviCRMSpeleoSeConfig {
 					->setLimit ( 1 )
 					->execute ()
 					->first ()
-					?? \Civi\Api4\Contact::create ( false )
+					?? \Civi\Api4\Contact::create ( FALSE )
 						->addValue ( 'organization_name', 'SSF - ' . $sektion )
 						->addValue ( 'legal_name', 'Sveriges Speleologförbund - ' . $sektion )
 						->addValue ( 'nick_name', $sektion )
 						->execute ()
-						->first ();
+						->first ()
+					;
 			$this->createMembershipType ( [ 
 					'name' => $sektion,
 					'description' => "Medlem i " . $sektion . ".",
@@ -108,9 +112,30 @@ class CiviCRMSpeleoSeConfig {
 					'member_of_contact_id' => $this->sektioner [$sektion] ['id']
 			] + $calenderYearMemebership );
 		}
-		// ########################################
-		// ### Dölj data som SSF inte använder: ###
-		// ########################################
+// NGF
+		$this->org_ngf = \Civi\Api4\Contact::get ( FALSE )
+		->addWhere ( 'contact_type', '=', 'Organization' )
+		->addWhere ( 'organization_name', 'LIKE', '%Norsk Grotteforbund%' )
+		->setLimit ( 1 )
+		->execute ()
+		->first ()
+		?? \Civi\Api4\Contact::create ( FALSE )
+		->addValue ( 'organization_name', 'Norsk Grotteforbund' )
+		->addValue ( 'legal_name', 'Norsk Grotteforbund NGF' )
+		->addValue ( 'nick_name', 'NGF' )
+		->execute ()
+		->first ()
+		;
+		$this->createMembershipType ( [
+				'name' => 'NGF',
+				'description' => "Medlem i Norsk Grotteforbund.",
+				'minimum_fee' => 240, // 240 för NGF 2021
+				'member_of_contact_id' => $this->org_ngf['id']
+		] + $calenderYearMemebership );
+		
+// 		// ########################################
+// 		// ### Dölj data som SSF inte använder: ###
+// 		// ########################################
 
 		// Dölj relationer som inte börjar på SFF i description:
 		$relationshipTypes = \Civi\Api4\RelationshipType::update ( false )
@@ -156,7 +181,7 @@ class CiviCRMSpeleoSeConfig {
 			$query->execute ()
 					->first ();
 		}
-	}
+ 	}
 }
 
 // plugin activation
