@@ -160,7 +160,7 @@ class CiviCRMSpeleoSe {
 		// Skicka ut ett välkomstmail till användaren:
 		// TODO ändra till user eller both:
 		// Aktivera vid release.
-		$notify = 'admin';
+		$notify = 'user';
 		wp_new_user_notification($user_id, null, $notify);
 		
 		$wpUser = get_user_by('id', $user_id);
@@ -210,7 +210,7 @@ class CiviCRMSpeleoSe {
      * @param WP_User $user     User object for new user.
      * @param string  $blogname The site title.
      */
-	public function wp_new_user_notification_email( $wp_new_user_notification_email, $user, $blogname )  {
+	public function wp_new_user_notification_email( $wp_new_user_notification_email, $user, $blogname = null )  {
 		// Ska vi lägga till mer info i välkomstmailen?
 		
 		return $wp_new_user_notification_email;
