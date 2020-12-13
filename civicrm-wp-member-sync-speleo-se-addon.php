@@ -211,8 +211,10 @@ class CiviCRMSpeleoSe {
      * @param string  $blogname The site title.
      */
 	public function wp_new_user_notification_email( $wp_new_user_notification_email, $user, $blogname = null )  {
-		// Ska vi lägga till mer info i välkomstmailen?
-		
+		$wp_new_user_notification_email['message'] .=
+				"\r\n" . 'Du får detta mail eftersom du är medlem i Sveriges Speleologförbund. Ovanstående ger dig inloggning till vår hemsida.'.
+				"\r\n" . 'På hemsidan kan du som inloggad medlem uppdatera dina medlemsuppgifter och komma åt material för medlemmar.'.
+				"\r\n" . 'Har du frågor är du välkommen att maila oss på medlem@speleo.se.';
 		return $wp_new_user_notification_email;
 	}
 	
