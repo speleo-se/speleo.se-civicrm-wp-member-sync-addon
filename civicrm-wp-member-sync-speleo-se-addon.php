@@ -81,6 +81,21 @@ class CiviCRMSpeleoSe {
 	     * @param string  $blogname The site title.
 	     */
 	    add_filter('wp_new_user_notification_email', [$this, 'wp_new_user_notification_email'], 10 , 2);
+	    
+	    /**
+	     * Filters the message body of the password reset mail.
+	     *
+	     * If the filtered message is empty, the password reset email will not be sent.
+	     *
+	     * @since 2.8.0
+	     * @since 4.1.0 Added `$user_login` and `$user_data` parameters.
+	     *
+	     * @param string  $message    Email message.
+	     * @param string  $key        The activation key.
+	     * @param string  $user_login The username for the user.
+	     * @param WP_User $user_data  WP_User object.
+	     */
+ 	    add_filter( 'retrieve_password_message',  [$this, 'retrieve_password_message'], 10 , 4);
 	}
 	
 	/**
@@ -104,7 +119,7 @@ class CiviCRMSpeleoSe {
 			])
 			// Om det av någon anledning blir så att det finns någon som har satts till medlemsnummer 9999999 eller liknande.
 			// Så går det att lösa det med att lägga in filer här:
-			// ->addWhere('external_identifier', '<', 9999999)
+			->addWhere('external_identifier', '<', 90000)
 			->addOrderBy('external_identifier', 'DESC')
 			->setLimit(1)
 			->setCheckPermissions(FALSE)
@@ -217,7 +232,13 @@ class CiviCRMSpeleoSe {
 				"\r\n" . 'Har du frågor är du välkommen att maila oss på medlem@speleo.se.';
 		return $wp_new_user_notification_email;
 	}
-	
+	public function retrieve_password_message( $message, $key, $user_login, $user_data )  {
+		$message .=
+		"\r\n" . 'Du är eller har varit medlem i Sveriges Speleologförbund. Ovanstående ger dig inloggning till vår hemsida.'.
+		"\r\n" . 'På hemsidan kan du som inloggad medlem uppdatera dina medlemsuppgifter och komma åt material för medlemmar.'.
+		"\r\n" . 'Har du frågor är du välkommen att maila oss på medlem@speleo.se.';
+		return $message;
+	}
 	
 	private const ACTIVITYTYPE_WORDPRESS = 'ActivityTypeWordpress';
 	private const ACTIVITYTYPE_SYNCUSER = 'ActivityTypeSyncUser';
