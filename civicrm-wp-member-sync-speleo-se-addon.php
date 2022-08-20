@@ -120,6 +120,8 @@ class CiviCRMSpeleoSe {
 			// Om det av någon anledning blir så att det finns någon som har satts till medlemsnummer 9999999 eller liknande.
 			// Så går det att lösa det med att lägga in filer här:
 			->addWhere('external_identifier', '<', 90000)
+			// 20220820 LL: Utan denna, läggs en is_deleted = FALSE på automatiskt.
+			->addWhere('is_deleted', 'IN', [FALSE, TRUE])
 			->addOrderBy('external_identifier', 'DESC')
 			->setLimit(1)
 			->setCheckPermissions(FALSE)
