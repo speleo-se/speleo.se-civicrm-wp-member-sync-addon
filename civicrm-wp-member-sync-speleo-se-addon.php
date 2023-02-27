@@ -118,7 +118,7 @@ class CiviCRMSpeleoSe {
 					'external_identifier',
 			])
 			// Om det av någon anledning blir så att det finns någon som har satts till medlemsnummer 9999999 eller liknande.
-			// Så går det att lösa det med att lägga in filer här:
+			// Så går det att lösa det med att lägga in filter här:
 			->addWhere('external_identifier', '<', 90000)
 			// 20220820 LL: Utan denna, läggs en is_deleted = FALSE på automatiskt.
 			->addWhere('is_deleted', 'IN', [FALSE, TRUE])
@@ -294,7 +294,8 @@ class CiviCRMSpeleoSe {
             $this->cachedActivityTypeId[$label] =
                     \Civi\Api4\OptionValue::get()
                             ->setSelect(['value'])
-                            ->addWhere('option_group.name', '=', 'activity_type')
+														// 2023-02-27 LL: Ändrat från option_group.name som inte fungerade längre.
+                            ->addWhere('option_group_id:name', '=', 'activity_type')
                             ->addWhere('label', '=', $label)
                             ->setLimit(1)
                             ->setCheckPermissions(FALSE)
